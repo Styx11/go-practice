@@ -14,19 +14,24 @@ func check(err error) {
 
 // Writer or bufio.Writer will get stuck
 // so we use goruntine
-func handleEcho(conn net.Conn, ch chan []byte) {
-	for msg := range ch {
-		_, err := conn.Write(msg)
-		check(err)
-	}
+func handleEcho(conn net.Conn) chan []byte {
+	ch := make(chan []byte)
+
+	go func() {
+		for msg := range ch {
+			_, err := conn.Write(msg)
+			check(err)
+		}
+	}()
+
+	return ch
 }
 
 // handle connect: receive message from client and start a goruntine to echo back
 func handleConn(conn net.Conn) {
 	defer conn.Close()
 
-	msgChan := make(chan []byte)
-	go handleEcho(conn, msgChan)
+	msgChan := handleEcho(conn)
 
 	fmt.Print("Echo:")
 	for {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"os"
 	"regexp"
 	"strings"
@@ -42,4 +43,35 @@ func init() {
 		return
 	}
 	msg = []byte(rawMsg)
+}
+
+func check(err error) {
+	if err != nil {
+		panic("Error in client:" + err.Error())
+	}
+}
+
+func handleConn(conn net.Conn) {
+	defer conn.Close()
+
+	_, err := conn.Write(msg)
+	check(err)
+
+	// receive message echoed from server
+	// but why conn.Read gets stuck in a for loop
+	// even check io.EOF
+	fmt.Print("Echo: ")
+	buf := make([]byte, len(msg))
+	n, err := conn.Read(buf)
+	check(err)
+	fmt.Printf("%s\n", buf[:n])
+
+}
+
+func main() {
+	// sem := make(chan int)
+	conn, err := net.Dial("tcp", "localhost"+port)
+	check(err)
+
+	handleConn(conn)
 }

@@ -1,0 +1,22 @@
+{
+  "FirstName": "Burce",
+  "LastName": "Lee",
+  "Address": [
+    {
+      "Type": "private",
+      "City": "Beijin",
+      "Country": "China"
+    },
+    {
+      "Type": "work",
+      "City": "Shanghai",
+      "Country": "China"
+    },
+    {
+      "Type": "word",
+      "City": "HangZhou",
+      "Country": "China"
+    }
+  ],
+  "Remark": false
+}

@@ -45,7 +45,7 @@ func handleConn(conn net.Conn) {
 		}
 
 		fmt.Println("SH: We gonna shot it down")
-		conn.Close()
+		conn.Close() //defer won't get called when using os.Exit
 		os.Exit(0)
 	case "WHO":
 		if clientName != "ADMIN" {
@@ -56,6 +56,7 @@ func handleConn(conn net.Conn) {
 		fmt.Println("WHO: This is the client list: 1:active, 0=inactive")
 		if len(clients) == 0 {
 			fmt.Println("No user yet")
+			return
 		}
 		for _, cli := range clients {
 			fmt.Printf("User %s is 1\n", cli)

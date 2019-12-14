@@ -20,7 +20,7 @@ func check(err error) {
 // then: message you want to send
 // more details: https://github.com/unknwon/the-way-to-go_ZH_CN/blob/master/eBook/15.1.md
 func main() {
-	inputReader := bufio.NewReader(os.Stdout)
+	inputReader := bufio.NewReader(os.Stdin)
 	fmt.Print("Firstly, what's your name? (only upper name): ")
 	rawName, err := inputReader.ReadString('\n')
 	check(err)

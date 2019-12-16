@@ -40,24 +40,46 @@ func notFoundHandler(w http.ResponseWriter, req *http.Request) {
 	w.Write(p)
 }
 
+func homeHandler(w http.ResponseWriter, req *http.Request) {
+	if req.URL.Path != "/" {
+		notFoundHandler(w, req)
+		return
+	}
+	addr := req.RemoteAddr
+	if _, ok := addrs[addr]; !ok {
+		addrs[addr] = true
+		fmt.Printf("Client comes in: %s\n", addr)
+	}
+
+	page := `
+		<h2>Hello, This is home</h2>
+		<h4>Here's what we got:</h4>
+		<ul>
+			<li><a href="/test1">Test1</a></li>
+		</ul>
+	`
+	p := formatPage(page, true)
+
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(p)
+}
+
+func test1Handler(w http.ResponseWriter, req *http.Request) {
+	page := "<h2>Hello, World</h2>"
+	p := formatPage(page, false)
+
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(p)
+}
+
 // practice for example 15.10
 // more detail: https://github.com/unknwon/the-way-to-go_ZH_CN/blob/master/eBook/15.4.md
 func main() {
-	// base handler
-	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		if req.URL.Path != "/" {
-			notFoundHandler(w, req)
-			return
-		}
-		addr := req.RemoteAddr
-		if _, ok := addrs[addr]; !ok {
-			addrs[addr] = true
-			fmt.Printf("Client comes in: %s\n", addr)
-		}
+	// extense handler
+	http.HandleFunc("/test1", test1Handler)
 
-		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte(`<h2>Hello, This is home</h2>`))
-	})
+	// base handler
+	http.HandleFunc("/", homeHandler)
 
 	fmt.Println("Starting server at localhost:8080...")
 	http.ListenAndServe(":8080", nil)

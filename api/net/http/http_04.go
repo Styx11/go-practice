@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 var (
@@ -10,6 +11,13 @@ var (
 	htmlStart = []byte("<html><body>")
 	htmlEnd   = []byte("</body></html>")
 	homer     = []byte(`<footer><a href="/">Go back home</a></footer>`)
+	test2Form = []byte(`
+		<form method="POST" action="#" name="test">
+			<input type="text" name="in"/>
+			</br>
+			<input type="submit" value="Submit"/>
+		</form>
+	`)
 )
 
 func check(err error) {
@@ -56,6 +64,7 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 		<h4>Here's what we got:</h4>
 		<ul>
 			<li><a href="/test1">Test1</a></li>
+			<li><a href="/test2">Test2</a></li>
 		</ul>
 	`
 	p := formatPage(page, true)
@@ -72,11 +81,35 @@ func test1Handler(w http.ResponseWriter, req *http.Request) {
 	w.Write(p)
 }
 
+func test2Handler(w http.ResponseWriter, req *http.Request) {
+	var page []byte
+	switch req.Method {
+	case "GET":
+		page = formatPage(string(test2Form), false)
+		w.Header().Set("Content-Type", "text/html")
+		_, err := w.Write(page)
+		check(err)
+
+	case "POST":
+		req.ParseForm()
+		inputIn := req.PostForm["in"]
+		input := strings.Join(inputIn, " ")
+
+		rawPage := fmt.Sprintf("<p>We've got your message: %s</p>", input)
+		page := formatPage(rawPage, false)
+
+		_, err := w.Write(page)
+		check(err)
+	}
+
+}
+
 // practice for example 15.10
 // more detail: https://github.com/unknwon/the-way-to-go_ZH_CN/blob/master/eBook/15.4.md
 func main() {
 	// extense handler
 	http.HandleFunc("/test1", test1Handler)
+	http.HandleFunc("/test2", test2Handler)
 
 	// base handler
 	http.HandleFunc("/", homeHandler)

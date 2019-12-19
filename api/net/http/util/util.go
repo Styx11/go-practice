@@ -40,3 +40,16 @@ func NotFoundHandler(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 	w.Write(p)
 }
+
+// SafeHandler returns a closure which handles panic in handler function
+func SafeHandler(fnc func(w http.ResponseWriter, req *http.Request)) http.HandlerFunc {
+	safe := func(w http.ResponseWriter, req *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				fmt.Println("Panic error:", err)
+			}
+		}()
+		fnc(w, req)
+	}
+	return http.HandlerFunc(safe)
+}

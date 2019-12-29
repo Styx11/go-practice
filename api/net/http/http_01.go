@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"strings"
 )
 
 var (
@@ -64,10 +65,47 @@ func notFoundHandler(w http.ResponseWriter, req *http.Request) {
 	w.Write(formatPage(notFoundPage, false))
 }
 
+// 请求/hello/Name 时，响应：hello Name（ Name 需是一个合法的姓）
+// 请求/shouthello/Name 时，响应：hello NAME
+// more details: https://github.com/unknwon/the-way-to-go_ZH_CN/blob/master/eBook/15.2.md
+func baseHelloer(w http.ResponseWriter, req *http.Request, shout bool) {
+	path := req.URL.Path
+	if path == "" { //must have subroute
+		notFoundHandler(w, req)
+		return
+	}
+
+	var h2 string
+	if ok := nameReg.Match([]byte(path)); ok {
+		if shout {
+			h2 = fmt.Sprintf("<h2>I said Hello %s !</h2>", strings.ToUpper(path))
+		} else {
+			h2 = fmt.Sprintf("<h2>Hello %s</h2>", path)
+		}
+	} else {
+		h2 = fmt.Sprintf("<h2>Illegal name: %s</h2>", path)
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(formatPage([]byte(h2), false))
+}
+func helloHandler(w http.ResponseWriter, req *http.Request) {
+	baseHelloer(w, req, false)
+	return
+}
+func shouthelloHandler(w http.ResponseWriter, req *http.Request) {
+	baseHelloer(w, req, true)
+	return
+}
+
 // http_01 implements practice 1 in:
 // https://github.com/unknwon/the-way-to-go_ZH_CN/blob/master/eBook/15.2.md
 func main() {
 	fmt.Println("Starting server at localhost:8080")
+
+	// Extensible handlers
+	http.Handle("/hello/", http.StripPrefix("/hello/", http.HandlerFunc(helloHandler)))
+	http.Handle("/shouthello/", http.StripPrefix("/shouthello/", http.HandlerFunc(shouthelloHandler)))
 
 	// base handlers
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {

@@ -22,10 +22,11 @@ type User struct {
 }
 
 var (
-	wd          string
-	currentUser *User
-	rootTmpl    *template.Template
-	homeTmpl    *template.Template
+	wd                  string
+	currentUser         *User
+	rootTmpl            *template.Template
+	managerPublicTmpl   *template.Template
+	managerOverviewTmpl *template.Template
 )
 
 func init() {
@@ -34,7 +35,8 @@ func init() {
 	currentUser = &User{}
 
 	rootTmpl = template.Must(template.ParseFiles(wd + "/templates/root.html"))
-	homeTmpl = template.Must(template.ParseFiles(wd + "/templates/home.html"))
+	managerPublicTmpl = template.Must(template.ParseGlob(wd + "/templates/manager/public/*.html"))
+	managerOverviewTmpl = template.Must(managerPublicTmpl.ParseFiles(wd + "/templates/manager/overview.html"))
 }
 
 // RootHandler handles all request to /
@@ -47,10 +49,7 @@ func makeHandler(f func(w http.ResponseWriter, req *http.Request)) http.Handler 
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
-				if e, ok := err.(error); ok {
-					log.Fatalln(e.Error())
-
-				}
+				log.Fatalf("%v\n", err)
 				w.WriteHeader(http.StatusBadRequest)
 			}
 		}()
@@ -92,6 +91,22 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	name := req.PostFormValue("name")
 	pw := req.PostFormValue("password")
 	remember := req.PostFormValue("remember")
+	signout := req.FormValue("signout")
+
+	// 设置用户Cookie
+	userCookie := &http.Cookie{}
+	userCookie.Name = "user"
+	userCookie.Value = strings.Join([]string{name, pw}, " ")
+	userCookie.Path = "/"
+
+	// 退出登陆，删除cookie
+	if signout != "" {
+		userCookie.MaxAge = -1
+		http.SetCookie(w, userCookie)
+		http.Redirect(w, req, "/", http.StatusSeeOther)
+		return
+	}
+	userCookie.MaxAge = 60 * 60
 
 	// 设置登陆cookie
 	loginCookie := &http.Cookie{}
@@ -103,13 +118,6 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	} else {
 		loginCookie.MaxAge = -1
 	}
-
-	// 设置用户Cookie
-	userCookie := &http.Cookie{}
-	userCookie.Name = "user"
-	userCookie.Value = strings.Join([]string{name, pw}, " ")
-	userCookie.MaxAge = 5
-	userCookie.Path = "/"
 
 	http.SetCookie(w, loginCookie)
 	http.SetCookie(w, userCookie)

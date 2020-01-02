@@ -1,0 +1,86 @@
+{{define "ManageOverview"}}
+{{template "ManageHeader" .User.Name}}
+<div class="mdui-container">
+  {{template "ManageTitle" "总览"}}
+  <div class="overview-body">
+    <div class="overview-dashboard mdui-row-xs-7">
+      <div class="mdui-col"></div>
+      <div class="mdui-col">
+        <div class="overview-circle">
+          <div class="mdui-text-color-white mdui-typo-display-3
+          {{if (lt .TotalStudents 10)}} circle-num-signle{{else}} circle-num{{end}}">
+            {{.TotalStudents}}
+          </div>
+          <div class="mdui-typo-title mdui-text-center circle-title mdui-p-l-3">总人数</div>
+        </div>
+      </div>
+      <div class="mdui-col"></div>
+      <div class="mdui-col">
+        <div class="overview-circle">
+          <div class="mdui-text-color-white mdui-typo-display-3
+          {{if (lt .News 10)}} circle-num-signle{{else}} circle-num{{end}}
+          ">{{.News}}</div>
+          <div class="mdui-typo-title mdui-text-center circle-title mdui-p-l-3">新增人数</div>
+        </div>
+      </div>
+      <div class="mdui-col"></div>
+      <div class="mdui-col">
+        <div class="overview-circle">
+          <div class="mdui-text-color-white mdui-typo-display-3
+          {{if (lt .Modified 10)}} circle-num-signle{{else}} circle-num{{end}}
+          ">{{.Modified}}</div>
+          <div class="mdui-typo-title mdui-text-center circle-title mdui-p-l-3">近期变动</div>
+        </div>
+      </div>
+      <div class="mdui-col"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overview-table mdui-container">
+{{if .Students}}
+  <div class="mdui-typo-headline-opacity">学生信息</div>
+  <div class="mdui-typo"><hr/></div>
+  <table class="mdui-table mdui-table-selectable mdui-table-hoverable">
+    <thead>
+      <tr>
+        <th>姓名</th>
+        <th class="mdui-table-col-numeric">性别</th>
+        <th class="mdui-table-col-numeric">学号</th>
+        <th class="mdui-table-col-numeric">院系</th>
+        <th class="mdui-table-col-numeric">所属班级</th>
+        <th class="mdui-table-col-numeric">学历层次</th>
+        <th class="mdui-table-col-numeric">学习形式</th>
+        <th class="mdui-table-col-numeric">毕业时间</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Students}}
+        <tr>
+          <td>{{.Name}}</td>
+          <td>{{.Sex}}</td>
+          <td>{{.ID}}</td>
+          <td>{{.Department}}</td>
+          <td>{{.Class}}</td>
+          <td>{{.Level}}</td>
+          <td>{{.Mod}}</td>
+          <td>{{.Graduation}}</td>
+        </tr>
+      {{end}}
+    </tbody>
+  </table>
+  <button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-m-t-2" mdui-dialog="{target: '#overview-del'}">删除</button>
+  <div class="mdui-dialog" id="overview-del">
+    <div class="mdui-dialog-title">确定吗？</div>
+    <div class="mdui-dialog-content">你将删除这些信息</div>
+    <div class="mdui-dialog-actions">
+      <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+      <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>确定</button>
+    </div>
+  </div>
+{{else}}
+<div class="mdui-typo-display-1-opacity mdui-text-center mdui-m-t-5">暂无学生信息</div>
+{{end}}
+</div>
+{{template "ManageFooter"}}
+{{end}}

@@ -1,0 +1,95 @@
+{{define "ManageHeader"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{{.}}</title>
+  <link href="/public/css/mdui.min.css" rel="stylesheet">
+  <link href="/public/css/custom.css" rel="stylesheet">
+</head>
+<body class="mdui-theme-primary-blue mdui-theme-accent-pink mdui-loaded mdui-drawer-body-left mdui-appbar-with-toolbar manage-body">
+  <div class="mdui-container">
+    <div class="mdui-appbar mdui-appbar-fixed mdui-appbar-scroll-hide">
+      <div class="mdui-toolbar mdui-color-theme">
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-drawer="{target: '#left-drawer'}">
+          <i class="mdui-icon material-icons">menu</i>
+        </a>
+        <span class="mdui-typo-title mdui-text-color-white">学生管理系统</span>
+        <div class="mdui-toolbar-spacer"></div>
+        <div class="mdui-textfield mdui-textfield-expandable mdui-float-right mdui-text-color-white">
+          <button class="mdui-textfield-icon mdui-btn mdui-btn-icon mdui-text-color-white"><i class="mdui-icon material-icons">search</i></button>
+          <input class="mdui-textfield-input mdui-text-color-white mdui-col-md-4" type="text" placeholder="Search"/>
+          <button class="mdui-textfield-close mdui-btn mdui-btn-icon mdui-text-color-white"><i class="mdui-icon material-icons">close</i></button>
+        </div>
+        <!-- <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-text-color-white"><i class="mdui-icon material-icons">search</i></a> -->
+        <a href="/home" class="mdui-btn mdui-btn-icon mdui-text-color-white"><i class="mdui-icon material-icons">refresh</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#menu'}"><i class="mdui-icon material-icons">more_vert</i></a>
+        <ul class="mdui-menu" id="menu">
+          <li class="mdui-menu-item" disabled>
+            <a href="javascript:;">Help & feedback</a>
+          </li>
+          <li class="mdui-menu-item">
+            <a href="javascript:;" class="mdui-ripple">Settings</a>
+          </li>
+          <li class="mdui-divider"></li>
+          <li class="mdui-menu-item">
+            <a href="/login?signout=true" class="mdui-ripple">Sign out</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="mdui-drawer overview-drawer mdui-shadow-2" id="left-drawer">
+      <ul class="mdui-list" mdui-collapse="{accordion: true}">
+        <a href="/home">
+          <li class="mdui-list-item mdui-ripple">
+            <i class="mdui-list-item-avatar mdui-icon material-icons">person</i>
+            <div class="mdui-list-item-content">{{.}}</div>
+          </li>
+        </a>
+        <li class="mdui-list-item">
+          <div class="mdui-list-item-content">
+            <h2>欢迎!</h2>
+          </div>
+        </li>
+        <li class="mdui-divider"></li>
+        <a href="/home">
+          <li class="mdui-list-item mdui-ripple">
+            <i class="mdui-list-item-icon mdui-icon material-icons">near_me</i>
+            <div class="mdui-list-item-content">总览</div>
+          </li>
+        </a>
+        <li class="mdui-collapse-item mdui-collapse-item-open">
+          <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+            <i class="mdui-list-item-icon mdui-icon material-icons">dvr</i>
+            <div class="mdui-list-item-content">系统管理</div>
+            <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+          </div>
+          <ul class="mdui-collapse-item-body mdui-list mdui-list-dense">
+            <a href="/home/manage/view">
+              <li class="mdui-list-item mdui-ripple">档案管理</li>
+            </a>
+            <a href="/home/manage">
+              <li class="mdui-list-item mdui-ripple">新建档案</li>
+            </a>
+            <li class="mdui-list-item mdui-ripple">访问日志</li>
+          </ul>
+        </li>
+        <li class="mdui-collapse-item">
+          <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+            <i class="mdui-list-item-icon mdui-icon material-icons">more</i>
+            <div class="mdui-list-item-content">更多</div>
+            <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+          </div>
+          <ul class="mdui-collapse-item-body mdui-list mdui-list-dense">
+            <li class="mdui-list-item mdui-ripple">Overview</li>
+            <li class="mdui-list-item mdui-ripple">Language</li>
+            <li class="mdui-list-item mdui-ripple">Location</li>
+            <li class="mdui-list-item mdui-ripple">New vs Returning</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+{{end}}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link href="/public/css/mdui.min.css" rel="stylesheet">
+  <link href="/public/css/custom.css" rel="stylesheet">
+</head>
+<body class="home-body mdui-theme-primary-light-blue mdui-theme-accent-pink mdui-loaded">
+  <div class="home-cover"></div>
+  <div class="mdui-container">
+    <div class="mdui-row mdui-valign">
+    <div class="mdui-col-md-6 mdui-col-offset-md-3 login-container mdui-shadow-2 mdui-hoverable mdui-center">
+      <h2 class="mdui-text-center">学生信息管理系统</h2>
+      <form action="/login" method="POST">
+        <div class="mdui-textfield mdui-textfield-floating-label" id="name">
+          <i class="mdui-icon material-icons">account_circle</i>
+          <label class="mdui-textfield-label">用户名</label>
+          <textarea class="mdui-textfield-input login-input" id="name-value" name="name">{{.Name}}</textarea>
+          <div class="mdui-textfield-error">无效用户名</div>
+        </div>
+        <div class="mdui-textfield mdui-textfield-floating-label" id="password">
+          <i class="mdui-icon material-icons">lock</i>
+          <label class="mdui-textfield-label">密码</label>
+          <input class="mdui-textfield-input login-input" id="password-value" name="password" type="password" value="{{.PassWord}}"/>
+          <div class="mdui-textfield-error">请输入密码</div>
+        </div>
+        <div class="mdui-col mdui-typo">
+          <label class="mdui-checkbox login-rem">
+            {{if .Remember}}
+              <input type="checkbox" name="remember" checked/>
+            {{else}}
+              <input type="checkbox" name="remember"/>
+            {{end}}
+            <i class="mdui-checkbox-icon"></i>
+            记住我
+            <small class="mdui-typo-subheading-opacity">（非公共场所使用）</small>
+          </label>
+        </div>
+        <div class="mdui-col">
+          <input class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple login-btn" 
+            value="登陆"
+            type="submit"
+            id="submit"
+          />
+        </div>
+      </form>
+    </div>
+    </div>
+  </div>
+  <script src="/public/js/mdui.min.js"></script>
+  <script>
+    var $$ = mdui.JQ;
+    var vaildtor = new RegExp(`^[0-9a-zA-Z_$]+$`)
+    var usernameField = $$('#name')
+    var passwordField = $$('#password')
+    var username = $$('#name-value')
+    var password = $$('#password-value')
+    var submit = $$('#submit')
+
+    // handle submit
+    submit.on('click', function(e) {
+      var nameVal = username.val()
+      var pwVal = password.val()
+      var nameValild = vaildtor.test(nameVal)
+      var pwValid = vaildtor.test(pwVal)
+
+      nameValild || usernameField.addClass('mdui-textfield-invalid')
+      pwValid || passwordField.addClass('mdui-textfield-invalid')
+      if (!nameValild || !pwValid) {
+        e.preventDefault();
+        return;
+      }
+    });
+
+    // handle input class
+    username.on('input', function (e) {
+      if (usernameField.hasClass('mdui-textfield-invalid')) {
+        usernameField.removeClass('mdui-textfield-invalid')
+      }
+    })
+    password.on('input', function (e) {
+      if (passwordField.hasClass('mdui-textfield-invalid')) {
+        passwordField.removeClass('mdui-textfield-invalid')
+      }
+    })
+  </script>
+</body>
+</html>

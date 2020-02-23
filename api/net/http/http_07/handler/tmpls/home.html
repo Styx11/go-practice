@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Wiki</title>
+</head>
+<body>
+  <h2>Hello, Wiki</h2>
+  </br>
+  {{$newPage := ""}}
+  <form action="/edit?page={{urlquery $newPage}}" method="GET">
+    <input type="text" name="page" value="{{$newPage}}"/>
+    <input type="submit" value="新建wiki"/>
+  </form>
+  {{if .}}
+    <h4>There are {{len .}} page(s) we have:</h4>
+    <ul>{{range .}}<li><a href="/view?page={{.}}">{{.}}</a></li>{{end}}</ul>
+  {{else}}
+    <h4>Now we have no page</h4>
+  {{end}}
+</body>
+</html>

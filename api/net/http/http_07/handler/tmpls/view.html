@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Wiki page {{.Title}}</title>
+</head>
+<body>
+  <h2>Wiki Page: {{.Title}}</h2>
+  <p style="border:1px solid black;width:20rem; height:30rem; display:box; box-lines:multiple;padding: 5px;">
+    {{html (printf "%s" .Body)}}
+  </p>
+  <p><a href="/edit?page={{urlquery .Title}}">Edit page {{.Title}}</a></p>
+  <p><a href="/">Go back home</a></p>
+</body>
+</html>
